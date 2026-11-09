@@ -1,0 +1,19 @@
+Architectures: all
+Codename: stable
+Components: main
+Date: Mon, 09 Nov 2026 08:22:00 +0000
+Label: lidawake
+Origin: lidawake
+Suite: stable
+MD5Sum:
+ 8750cc94afcd5d32de06756855f02e9d              971 main/binary-all/Packages
+ 82e66ec41751ab51d059112b606cc43f              672 main/binary-all/Packages.gz
+SHA1:
+ f64e7c16e917d87103da84065d2afd40ee30cfc1              971 main/binary-all/Packages
+ 83864c7d80e52ebbfd41b63ef5e9a84e41242c06              672 main/binary-all/Packages.gz
+SHA256:
+ 55f2dafa10b4e442dbff7cb548d8fbf397e3c263ab987916eeb3b9aa841c702e              971 main/binary-all/Packages
+ dd511b0cdedb1d53b8c6a737f013a42115751566ab26d342dfb45f5ebc8a3bd2              672 main/binary-all/Packages.gz
+SHA512:
+ 2277f9c6f4e603bf79bbfd83e1b2d52177977fa11f3b462687aee54d244e041853d2f2725f07e792ea43e410a7165c8d016c9e17deea367ace37ad9859390cc5              971 main/binary-all/Packages
+ bb7f4005865f4468f574e0f49b3e4953656d06b18ed6be697cab378b0a093ec057ac24d79160345c8a55e4af84cb2ab859eed4822ad0c0bb760fd279e0252f32              672 main/binary-all/Packages.gz
