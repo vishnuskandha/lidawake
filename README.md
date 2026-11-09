@@ -4,6 +4,9 @@
 <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-666666" alt="MIT"></a>
 <img src="https://img.shields.io/badge/GNOME-46--51-4a86cf" alt="GNOME 46-51">
 </p>
+
+<p align="center"><img src="docs/demo.gif" alt="lidawake demo" width="360"></p>
+
 <p align="center"><b>Keep your Linux laptop awake with the lid closed.</b><br>One click in the GNOME top bar. No root, no daemon, no config files.</p>
 <p align="center"><img src="docs/icons.png" width="320" alt="Closed eyelid = off, open eye = on"></p>
 
