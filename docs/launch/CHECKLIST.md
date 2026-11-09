@@ -1,0 +1,12 @@
+# Launch checklist
+- [ ] Fix and verify the unplug-charger issue
+- [ ] Test on a second machine / distro
+- [ ] Record GIF (eye icon toggle, lid close, laptop still alive) -> docs/demo.gif, add to top of README
+- [ ] `scripts/publish.sh` (creates repo, topics, v0.1.0 release with .deb + extension zip)
+- [ ] Set social preview: repo Settings -> Social preview -> docs/social.png
+- [ ] Submit extension (docs/launch/SUBMIT_GNOME.md)
+- [ ] Reddit posts (docs/launch/reddit.md), one per day
+- [ ] Show HN (docs/launch/hackernews.md)
+- [ ] Blog post (docs/launch/blog-outline.md)
+- [ ] PRs to awesome-gnome / awesome-linux-software lists
+- [ ] Label 3+ issues `good first issue`

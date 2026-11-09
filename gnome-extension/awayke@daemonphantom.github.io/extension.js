@@ -25,7 +25,8 @@ const AwaykeButton = GObject.registerClass(
 class AwaykeButton extends PanelMenu.Button {
     _init(ext) {
         super._init(0.5, 'Awayke');
-        this._launchCmd = GLib.build_filenamev([GLib.get_home_dir(), '.local', 'bin', 'awayke']);
+        const userBin = GLib.build_filenamev([GLib.get_home_dir(), '.local', 'bin', 'awayke']);
+        this._launchCmd = GLib.file_test(userBin, GLib.FileTest.EXISTS) ? userBin : '/usr/bin/awayke';
         this._group = Gio.DBusActionGroup.get(Gio.DBus.session, APP_ID, APP_PATH);
         this._running = false;
         this._pendingOn = false;

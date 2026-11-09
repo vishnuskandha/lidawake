@@ -1,0 +1,23 @@
+name: Bug report
+description: Laptop still sleeps, icon missing, crash
+body:
+  - type: input
+    id: env
+    attributes: {label: "Distro, GNOME version", placeholder: "Ubuntu 24.04, GNOME Shell 46"}
+    validations: {required: true}
+  - type: textarea
+    id: inhibit
+    attributes:
+      label: Output of `systemd-inhibit --list | grep -i awayke` with Awayke ON
+      render: shell
+    validations: {required: true}
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: "`journalctl -b /usr/bin/gnome-shell --no-pager | grep -i -E 'awayke|JS ERROR' | tail -20` and `gnome-extensions info awayke@daemonphantom.github.io`"
+      render: shell
+  - type: textarea
+    id: what
+    attributes: {label: What happened vs what you expected}
+    validations: {required: true}

@@ -308,8 +308,9 @@ class Awayke(Gtk.Application):
         menu.append(auto)
 
         menu.append(Gtk.SeparatorMenuItem())
-        add("Uninstall Awayke…", lambda _: self.menu_uninstall())
-        menu.append(Gtk.SeparatorMenuItem())
+        if os.path.exists(os.path.join(DATA_DIR, "uninstall.sh")):
+            add("Uninstall Awayke…", lambda _: self.menu_uninstall())
+            menu.append(Gtk.SeparatorMenuItem())
         add("Quit Awayke", lambda _: self.quit_app())
         menu.show_all()
         return menu

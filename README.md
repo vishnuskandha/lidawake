@@ -1,4 +1,9 @@
 <h1 align="center">lidawake</h1>
+<p align="center">
+<a href="https://github.com/vishnuskandha/lidawake/actions/workflows/test.yml"><img src="https://github.com/vishnuskandha/lidawake/actions/workflows/test.yml/badge.svg" alt="tests"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-666666" alt="MIT"></a>
+<img src="https://img.shields.io/badge/GNOME-46--51-4a86cf" alt="GNOME 46-51">
+</p>
 <p align="center"><b>Keep your Linux laptop awake with the lid closed.</b><br>One click in the GNOME top bar. No root, no daemon, no config files.</p>
 <p align="center"><img src="docs/icons.png" width="320" alt="Closed eyelid = off, open eye = on"></p>
 
@@ -15,6 +20,14 @@ Close the lid and Ubuntu suspends. lidawake puts an eye in the top bar: **closed
 - No sudo at runtime
 
 ## Install (Ubuntu 24.04+)
+
+**.deb (recommended):** download `lidawake_*_all.deb` from [Releases](https://github.com/vishnuskandha/lidawake/releases/latest), then:
+
+```bash
+sudo apt install ./lidawake_*_all.deb
+```
+
+**From source:**
 
 ```bash
 git clone https://github.com/vishnuskandha/lidawake.git
