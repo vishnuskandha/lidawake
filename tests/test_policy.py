@@ -3,7 +3,7 @@ import sys
 import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from awayke import policy as p  # noqa: E402
+from lidawake import policy as p  # noqa: E402
 
 
 class AutoOff(unittest.TestCase):

@@ -14,5 +14,5 @@ jobs:
         with:
           files: |
             dist/*.deb
-            dist/awayke-extension.zip
+            dist/lidawake-extension.zip
           body_path: CHANGELOG.md

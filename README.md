@@ -34,7 +34,7 @@ git clone https://github.com/vishnuskandha/lidawake.git
 cd lidawake && ./install.sh
 ```
 
-Then log out and back in once so GNOME loads the extension. The app command is `awayke`.
+Then log out and back in once so GNOME loads the extension. The app command is `lidawake`.
 
 ## How it works
 
@@ -59,7 +59,7 @@ Beta. The logic is covered by unit tests and an integration test against mocked 
 
 ## Uninstall
 
-`~/.local/share/awayke/uninstall.sh`, or "Uninstall" in the tray menu.
+`~/.local/share/lidawake/uninstall.sh`, or "Uninstall" in the tray menu.
 
 ## Development
 

@@ -41,15 +41,15 @@ class SleepInhibitor:
         bus = Gio.bus_get_sync(Gio.BusType.SYSTEM, None)
         reply, fds = bus.call_with_unix_fd_list_sync(
             LOGIND[0], LOGIND[1], LOGIND[2], "Inhibit",
-            GLib.Variant("(ssss)", (INHIBIT_WHAT, "Awayke", "Awayke is keeping this machine awake", "block")),
+            GLib.Variant("(ssss)", (INHIBIT_WHAT, "Lidawake", "Lidawake is keeping this machine awake", "block")),
             GLib.VariantType("(h)"), Gio.DBusCallFlags.NONE, 5000, None, None)
         self._fd = fds.steal_fds()[reply.unpack()[0]]
 
     def _acquire_subprocess(self, original):
         try:
             proc = subprocess.Popen(
-                ["systemd-inhibit", f"--what={INHIBIT_WHAT}", "--who=Awayke",
-                 "--why=Awayke is keeping this machine awake", "--mode=block", "sleep", "infinity"],
+                ["systemd-inhibit", f"--what={INHIBIT_WHAT}", "--who=Lidawake",
+                 "--why=Lidawake is keeping this machine awake", "--mode=block", "sleep", "infinity"],
                 stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
             time.sleep(0.3)
             if proc.poll() is not None:
@@ -83,7 +83,7 @@ class DisplayWakeKeeper:
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             r = bus.call_sync(
                 "org.gnome.SessionManager", "/org/gnome/SessionManager", "org.gnome.SessionManager",
-                "Inhibit", GLib.Variant("(susu)", ("Awayke", 0, "Awayke is active", 8)),
+                "Inhibit", GLib.Variant("(susu)", ("Lidawake", 0, "Lidawake is active", 8)),
                 GLib.VariantType("(u)"), Gio.DBusCallFlags.NONE, 2000, None)
             self._cookie = r.unpack()[0]
         except Exception:
@@ -211,7 +211,7 @@ def notify(title, body):
         bus.call_sync(
             "org.freedesktop.Notifications", "/org/freedesktop/Notifications",
             "org.freedesktop.Notifications", "Notify",
-            GLib.Variant("(susssasa{sv}i)", ("Awayke", 0, "awayke-off", title, body, [], {}, 5000)),
+            GLib.Variant("(susssasa{sv}i)", ("Lidawake", 0, "lidawake-off", title, body, [], {}, 5000)),
             None, Gio.DBusCallFlags.NONE, 2000, None)
     except Exception:
         pass

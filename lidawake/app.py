@@ -1,4 +1,4 @@
-"""Awayke for Linux: tray app. Port of AppDelegate.swift."""
+"""Lidawake for Linux: tray app. Port of AppDelegate.swift."""
 import json
 import os
 import signal
@@ -17,11 +17,16 @@ from . import policy  # noqa: E402
 from .system import (BatteryMonitor, DisplayWakeKeeper, LidMonitor,  # noqa: E402
                      SleepInhibitor, notify)
 
-APP_ID = "io.github.daemonphantom.Awayke"
-DATA_DIR = os.environ.get("AWAYKE_HOME", os.path.expanduser("~/.local/share/awayke"))
-CONFIG = os.path.join(os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config")), "awayke", "config.json")
+APP_ID = "io.github.vishnuskandha.Lidawake"
+DATA_DIR = os.environ.get("LIDAWAKE_HOME", os.path.expanduser("~/.local/share/lidawake"))
+CONFIG = os.path.join(os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config")), "lidawake", "config.json")
 THRESHOLDS = [0, 10, 20, 30]
 DURATIONS = [15, 30, 60, 120]
+
+
+def now():
+    """Seconds since boot, including time spent suspended (monotonic does not)."""
+    return time.clock_gettime(time.CLOCK_BOOTTIME)
 
 
 def duration_label(m):
@@ -40,7 +45,7 @@ def format_remaining(seconds):
     return f"{h}h" if r == 0 else f"{h}h {r}m"
 
 
-class Awayke(Gtk.Application):
+class Lidawake(Gtk.Application):
     def __init__(self):
         super().__init__(application_id=APP_ID, flags=Gio.ApplicationFlags.FLAGS_NONE)
         self.inhibitor = SleepInhibitor()
@@ -53,24 +58,34 @@ class Awayke(Gtk.Application):
         self.override = False
         self.last_snapshot = None
         self.deadline = None
+        self.timer_minutes = None
         self.tick_id = None
         self.threshold = self._load_threshold()
         self.indicator = None
         self.state_item = None
+        self.lid_ok = False
 
     # ---- persistence -------------------------------------------------
     def _load_threshold(self):
-        try:
-            with open(CONFIG) as f:
-                v = int(json.load(f).get("autoOffThreshold", 0))
-            return v if v in THRESHOLDS else 0
-        except (OSError, ValueError):
-            return 0
+        legacy = os.path.join(os.path.dirname(os.path.dirname(CONFIG)), "awayke", "config.json")
+        for path in (CONFIG, legacy):
+            try:
+                with open(path) as f:
+                    v = int(json.load(f).get("autoOffThreshold", 0))
+                return v if v in THRESHOLDS else 0
+            except (OSError, ValueError, AttributeError, TypeError):
+                continue
+        return 0
 
     def _save_threshold(self):
-        os.makedirs(os.path.dirname(CONFIG), exist_ok=True)
-        with open(CONFIG, "w") as f:
-            json.dump({"autoOffThreshold": self.threshold}, f)
+        try:
+            os.makedirs(os.path.dirname(CONFIG), exist_ok=True)
+            tmp = CONFIG + ".tmp"
+            with open(tmp, "w") as f:
+                json.dump({"autoOffThreshold": self.threshold}, f)
+            os.replace(tmp, CONFIG)
+        except OSError as e:
+            print(f"Lidawake: could not save settings: {e}", file=sys.stderr)
 
     # ---- lifecycle ---------------------------------------------------
     def do_startup(self):
@@ -78,26 +93,30 @@ class Awayke(Gtk.Application):
         self.hold()
         icons = os.path.join(DATA_DIR, "icons")
         self.indicator = AppIndicator.Indicator.new(
-            "awayke", "awayke-off", AppIndicator.IndicatorCategory.APPLICATION_STATUS)
+            "lidawake", "lidawake-off", AppIndicator.IndicatorCategory.APPLICATION_STATUS)
         self.indicator.set_icon_theme_path(icons)
-        no_tray = os.environ.get("AWAYKE_NO_TRAY") == "1"
+        no_tray = os.environ.get("LIDAWAKE_NO_TRAY") == "1"
         self.indicator.set_status(AppIndicator.IndicatorStatus.PASSIVE if no_tray
                                   else AppIndicator.IndicatorStatus.ACTIVE)
-        self.indicator.set_title("Awayke")
+        self.indicator.set_title("Lidawake")
 
         self.battery.on_change = self.handle_battery
         if not self.battery.start():
-            print("Awayke: UPower unavailable; battery auto-off disabled.", file=sys.stderr)
+            print("Lidawake: UPower unavailable; battery auto-off disabled.", file=sys.stderr)
         self.lid.on_change = self.handle_lid
-        if not self.lid.start():
-            print("Awayke: lid monitoring unavailable; until-lid-reopens sessions cannot end on their own.",
+        self.lid_ok = self.lid.start()
+        if not self.lid_ok:
+            print("Lidawake: lid monitoring unavailable; until-lid-reopens sessions cannot end on their own.",
                   file=sys.stderr)
 
-        # Exported on the session bus at /io/github/daemonphantom/Awayke; the GNOME
+        # Exported on the session bus at /io/github/vishnuskandha/Lidawake; the GNOME
         # Quick Settings extension drives the app through these.
         self.act_active = Gio.SimpleAction.new_stateful("active", None, GLib.Variant.new_boolean(False))
         self.act_active.connect("activate", lambda *_: self.set_intent(not self.effective_active))
         self.add_action(self.act_active)
+        self.act_mode = Gio.SimpleAction.new_stateful("mode", None, GLib.Variant.new_string("off"))
+        self.act_mode.set_enabled(False)
+        self.add_action(self.act_mode)
         self.act_status = Gio.SimpleAction.new_stateful("status", None, GLib.Variant.new_string("Inactive"))
         self.act_status.set_enabled(False)
         self.add_action(self.act_status)
@@ -144,8 +163,20 @@ class Awayke(Gtk.Application):
         return self.intent and not self.suspended
 
     @property
+    def mode(self):
+        if not self.intent:
+            return "off"
+        if self.suspended:
+            return "paused"
+        if self.lid_session.is_active:
+            return "lid"
+        if self.deadline is not None:
+            return f"timer:{self.timer_minutes}"
+        return "indefinite"
+
+    @property
     def remaining(self):
-        return None if self.deadline is None else max(0, self.deadline - time.monotonic())
+        return None if self.deadline is None else max(0, self.deadline - now())
 
     @property
     def below_floor(self):
@@ -185,7 +216,8 @@ class Awayke(Gtk.Application):
 
     def start_timer(self, minutes):
         self.cancel_timer()
-        self.deadline = time.monotonic() + minutes * 60
+        self.timer_minutes = minutes
+        self.deadline = now() + minutes * 60
         self.tick_id = GLib.timeout_add_seconds(15, self._tick)
 
     def cancel_timer(self):
@@ -193,11 +225,12 @@ class Awayke(Gtk.Application):
             GLib.source_remove(self.tick_id)
             self.tick_id = None
         self.deadline = None
+        self.timer_minutes = None
 
     def _tick(self):
         if self.deadline is None:
             return False
-        if time.monotonic() >= self.deadline:
+        if now() >= self.deadline:
             self.tick_id = None
             self.cancel_timer()
             self.end_session("Timer finished.")
@@ -220,7 +253,7 @@ class Awayke(Gtk.Application):
         self.override = False
         self.sync_display()
         self.refresh()
-        notify("Awayke turned off", body)
+        notify("Lidawake turned off", body)
 
     def sync_display(self):
         (self.display.prevent if self.effective_active else self.display.allow)()
@@ -242,9 +275,9 @@ class Awayke(Gtk.Application):
         self.sync_display()
         self.refresh()
         if suspending:
-            notify("Awayke turned off", f"Battery dropped below {self.threshold}%.")
+            notify("Lidawake turned off", f"Battery dropped below {self.threshold}%.")
         else:
-            notify("Awayke back on", "Charging - sleep prevention resumed.")
+            notify("Lidawake back on", "Charging - sleep prevention resumed.")
 
     # ---- UI ----------------------------------------------------------
     def state_title(self):
@@ -260,8 +293,9 @@ class Awayke(Gtk.Application):
     def refresh(self):
         self.act_active.set_state(GLib.Variant.new_boolean(self.effective_active))
         self.act_auto.set_state(GLib.Variant.new_int32(self.threshold))
+        self.act_mode.set_state(GLib.Variant.new_string(self.mode))
         self.act_status.set_state(GLib.Variant.new_string(self.state_title()))
-        self.indicator.set_icon_full("awayke-on" if self.effective_active else "awayke-off", self.state_title())
+        self.indicator.set_icon_full("lidawake-on" if self.effective_active else "lidawake-off", self.state_title())
         self.indicator.set_secondary_activate_target(None)
         self.indicator.set_menu(self.build_menu())
         self.indicator.set_secondary_activate_target(self.toggle_item)
@@ -286,16 +320,17 @@ class Awayke(Gtk.Application):
         self.toggle_item = toggle
         menu.append(Gtk.SeparatorMenuItem())
 
-        keep = Gtk.MenuItem(label="Keep awayke for")
+        keep = Gtk.MenuItem(label="Keep lidawake for")
         sub = Gtk.Menu()
         add("Until lid is reopened", lambda _: self.menu_until_lid(), sub,
-            check=self.effective_active and self.lid_session.is_active)
+            check=(self.mode == "lid"), sensitive=self.lid_ok)
         sub.append(Gtk.SeparatorMenuItem())
         for m in DURATIONS:
-            add(duration_label(m), lambda _, m=m: self.menu_keep_for(m), sub)
+            add(duration_label(m), lambda _, m=m: self.menu_keep_for(m), sub,
+                check=(self.mode == f"timer:{m}"))
         sub.append(Gtk.SeparatorMenuItem())
         add("Indefinitely", lambda _: self.menu_keep_for(0), sub,
-            check=self.effective_active and self.deadline is None and not self.lid_session.is_active)
+            check=(self.mode == "indefinite"))
         keep.set_submenu(sub)
         menu.append(keep)
 
@@ -309,9 +344,9 @@ class Awayke(Gtk.Application):
 
         menu.append(Gtk.SeparatorMenuItem())
         if os.path.exists(os.path.join(DATA_DIR, "uninstall.sh")):
-            add("Uninstall Awayke…", lambda _: self.menu_uninstall())
+            add("Uninstall Lidawake…", lambda _: self.menu_uninstall())
             menu.append(Gtk.SeparatorMenuItem())
-        add("Quit Awayke", lambda _: self.quit_app())
+        add("Quit Lidawake", lambda _: self.quit_app())
         menu.show_all()
         return menu
 
@@ -327,6 +362,9 @@ class Awayke(Gtk.Application):
         self.refresh()
 
     def menu_until_lid(self):
+        if not self.lid_ok:
+            notify("Lidawake", "Lid state is unavailable on this machine, so this mode can't end on its own.")
+            return
         if not self.effective_active:
             self.set_intent(True, until_lid=True)
             return
@@ -342,8 +380,8 @@ class Awayke(Gtk.Application):
         self.refresh()
 
     def menu_uninstall(self):
-        dlg = Gtk.MessageDialog(message_type=Gtk.MessageType.WARNING, text="Uninstall Awayke?",
-                                secondary_text="This removes Awayke's files and autostart entry, then quits.")
+        dlg = Gtk.MessageDialog(message_type=Gtk.MessageType.WARNING, text="Uninstall Lidawake?",
+                                secondary_text="This removes Lidawake's files and autostart entry, then quits.")
         dlg.add_button("Cancel", Gtk.ResponseType.CANCEL)
         dlg.add_button("Uninstall", Gtk.ResponseType.OK)
         ok = dlg.run() == Gtk.ResponseType.OK
@@ -355,9 +393,9 @@ class Awayke(Gtk.Application):
             self.quit_app()
 
     def present_error(self, error):
-        notify("Awayke couldn't toggle sleep.", str(error))
-        print(f"Awayke: {error}", file=sys.stderr)
+        notify("Lidawake couldn't toggle sleep.", str(error))
+        print(f"Lidawake: {error}", file=sys.stderr)
 
 
 def main():
-    return Awayke().run(None)
+    return Lidawake().run(None)

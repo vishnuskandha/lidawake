@@ -14,4 +14,4 @@ jobs:
       - name: Integration tests (mock logind/UPower)
         run: PYTHON=/usr/bin/python3 ./tests/run_integration.sh
       - name: Extension syntax
-        run: node --input-type=module --check < gnome-extension/awayke@daemonphantom.github.io/extension.js
+        run: node --input-type=module --check < gnome-extension/lidawake@vishnuskandha.github.io/extension.js

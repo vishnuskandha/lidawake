@@ -8,14 +8,14 @@ body:
   - type: textarea
     id: inhibit
     attributes:
-      label: Output of `systemd-inhibit --list | grep -i awayke` with Awayke ON
+      label: Output of `systemd-inhibit --list | grep -i lidawake` with Lidawake ON
       render: shell
     validations: {required: true}
   - type: textarea
     id: logs
     attributes:
       label: Logs
-      description: "`journalctl -b /usr/bin/gnome-shell --no-pager | grep -i -E 'awayke|JS ERROR' | tail -20` and `gnome-extensions info awayke@daemonphantom.github.io`"
+      description: "`journalctl -b /usr/bin/gnome-shell --no-pager | grep -i -E 'lidawake|JS ERROR' | tail -20` and `gnome-extensions info lidawake@vishnuskandha.github.io`"
       render: shell
   - type: textarea
     id: what

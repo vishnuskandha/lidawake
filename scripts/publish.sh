@@ -9,5 +9,5 @@ for t in gnome-shell-extension ubuntu linux laptop power-management systemd gnom
 done
 scripts/build-deb.sh >/dev/null; scripts/build-extension-zip.sh >/dev/null
 git tag -a "v$(cat VERSION)" -m "v$(cat VERSION)" && git push --tags
-gh release create "v$(cat VERSION)" dist/*.deb dist/awayke-extension.zip \
+gh release create "v$(cat VERSION)" dist/*.deb dist/lidawake-extension.zip \
   --title "lidawake v$(cat VERSION)" --notes-file CHANGELOG.md
