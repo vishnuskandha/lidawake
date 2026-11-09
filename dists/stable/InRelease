@@ -4,35 +4,39 @@ Hash: SHA512
 Architectures: all
 Codename: stable
 Components: main
-Date: Mon, 09 Nov 2026 08:22:00 +0000
+Date: Mon, 09 Nov 2026 08:31:26 +0000
 Label: lidawake
 Origin: lidawake
 Suite: stable
 MD5Sum:
- 8750cc94afcd5d32de06756855f02e9d              971 main/binary-all/Packages
- 82e66ec41751ab51d059112b606cc43f              672 main/binary-all/Packages.gz
+ 0effd7a7ad65be2e29455a6b7c137797             1060 Release
+ fac7186205c5b04245c59c45e9166a67             1942 main/binary-all/Packages
+ 22b7b8b33a0f04f2b27006f4462eb85d              876 main/binary-all/Packages.gz
 SHA1:
- f64e7c16e917d87103da84065d2afd40ee30cfc1              971 main/binary-all/Packages
- 83864c7d80e52ebbfd41b63ef5e9a84e41242c06              672 main/binary-all/Packages.gz
+ e4bb1c44395ec33897293700531a2e7c347727ba             1060 Release
+ df38198c62f5b73bcbc6c7aa3c869fd42e7e3b06             1942 main/binary-all/Packages
+ 3488819b56024dd8bc968f9a4dcbdba3bd02f0f8              876 main/binary-all/Packages.gz
 SHA256:
- 55f2dafa10b4e442dbff7cb548d8fbf397e3c263ab987916eeb3b9aa841c702e              971 main/binary-all/Packages
- dd511b0cdedb1d53b8c6a737f013a42115751566ab26d342dfb45f5ebc8a3bd2              672 main/binary-all/Packages.gz
+ 4124225958ff1d4d25544caecdf5d6a76be47c435379b84c926d76fb476d91ff             1060 Release
+ 1d6419d5601806f6fc61ae1ff6c2c2292fd1ad89ca50a8ee4d5859b73c97aff4             1942 main/binary-all/Packages
+ 3a0f26bb4375e351c067ba648523f8ea4c30dc754543e228e2b8c61a6511a99e              876 main/binary-all/Packages.gz
 SHA512:
- 2277f9c6f4e603bf79bbfd83e1b2d52177977fa11f3b462687aee54d244e041853d2f2725f07e792ea43e410a7165c8d016c9e17deea367ace37ad9859390cc5              971 main/binary-all/Packages
- bb7f4005865f4468f574e0f49b3e4953656d06b18ed6be697cab378b0a093ec057ac24d79160345c8a55e4af84cb2ab859eed4822ad0c0bb760fd279e0252f32              672 main/binary-all/Packages.gz
+ 9d299b1bedd968d82e831f670f876b389f9b4a7d4b56200f71abb736fbaf6fb2c63d6f37d42979a96418cff2fcf19a6744d8d987b65e3e72177e9d07c3874437             1060 Release
+ 813468312c2a81dccf9d486a674085ac3c2299ea90f132180f7734a22b9f5da07cb05b05dd5034b8c5eed2cbebce12968d38b37abe6524cac980e74d140eec59             1942 main/binary-all/Packages
+ 2150dc79db5e05dd31c30e7e2ad4c06abfb04cbd7a9720e7e8f31cd240470c3620d9d59fedaf06028d9fe67784c224b75ff88e76a6cc24a38ae2f9de37dfc577              876 main/binary-all/Packages.gz
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEEn5CwgqBYq3WF9GcD722FuEipfxUFAmrxgqoACgkQ722FuEip
-fxVS8Q/8Do6BMzuCNkgbgp/t+L/AyT4iJrmjGA7oyQbwuIWy7tc5r2xlYChkGFjy
-eQoXBhYY27pgS01szBj2DtwJUjD4wPSE1jIjOtiN+A1mZhgHGFh+NgolaIFugX9O
-PIqlLZwaOo+nuu58coK1/Gp/z3zZHUSEZ/gT+DeouVuv4pkVLwOhweCHNdCCKxA6
-kOqfsOB842TPxG9xyEGJgWi53ADI1xQY4y005WdPZAzJtqRTA1/mnh1/gIeSd0CJ
-zchScrJXU48Iz5czvsDZgrhipJIjzHiI1zQ2f9UlzI36hHLIwBAjaaEqGHP+JrVj
-fbPsk4k7Fa322HBWAbmmEgov43Pz1lYGeyR81WBpG/2mA6A8ZeiSHe8AZ80LhONg
-qki24Uh8dBMqJPiuElBt25yn4gJxkx3wyI1gmAcLDLkOFZ5mFumjDazDfqcpXH3y
-pOgOg73uLfcziq9iOKJgwcXjEf2CLn6wBDkrUecWlCYRgKA+VEb4/+Fe4El+KrRL
-WrmgWZWUP0AeqJXndeMCUhLGbsRtcjujSZOttbmk8cF87/7TycbxlXeQQ5dWU0tk
-mmQzyLzJY0ggxr5LOAUCFTocHnGlN14Wf05W2ZTq2k0pUrQueFXK1sXTe8/UV7SN
-wlMiU6qeY/r40nvL8KfSU+V1fXWH63S8LEHsr5526h+FnAq1R6w=
-=Smz4
+iQIzBAEBCgAdFiEEn5CwgqBYq3WF9GcD722FuEipfxUFAmrxhN8ACgkQ722FuEip
+fxXfVQ//XyBSNiLh4Vff9HlYnS3iwHYErzkHNil9cjD+plu3OgKmYFffp3LxwvAL
+1lBmtEnp3LYOl9ZJ9o4EQn1b0ELeVvABBBy+39PDRhGpIBDSDouSkdDAxTjh08n8
+4o1uLrpwbo3W5IAalQ7cBYoyJtFnsWuVmISfdgYhAZFx7f/1g6Iq+SJsNmhbDPPD
+FvpgdH7VT5SoF8lWIfaIB11/uj1dftL7o8LT6/OZWc7NBbrrnqDmIIr5TBra2XqX
+yKNwXgEr9rglO4zen69KkKQxtdETZTJbP0DOcR4uI5LLP8D05Eadv7+X8pdANsZe
+VDfkJdNyhTocf4Z4tcNlBFt67ZA5WctLSd7psoEgtje7Ee9A9cnYIk071ixCDwHP
+8uyzBZG2No1MuDpI4QV2YEJ958+/PRO5DggWVeWZ1OOqhGL4CKzahKmMdoGKk88g
+lPR2j8sGPZwl498bf9xlp+4t/NRNEhB33LO36tGXaIx9UEyP7A18ydpL4yLlQu/6
+eXED8/ST/cVFihKmeIO85rLRiLR+3GktUZ+DnrGnyu5LUQ/1CSsyAhp+kMwEizcQ
+Y/98ERbfHgTxbxszCTFwigIvMZcoN+JvmF2thN0CWJReppC1kPlfL1ddFunxfNkU
+DkMECkWrsZ1uDXd9aAkaPKIhJN9qVNsuPBe/M2yTbLGtMXeXY88=
+=RfUt
 -----END PGP SIGNATURE-----

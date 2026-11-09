@@ -18,3 +18,23 @@ Description: Keep a laptop awake with the lid closed
  closing the lid does not suspend the machine. Timed sessions, until-lid-reopens
  sessions and low-battery auto-off. Linux port of Lidawake.
 
+Package: lidawake
+Architecture: all
+Version: 0.2.2
+Priority: optional
+Section: utils
+Maintainer: Vishnu Skandha <vishnu.skandha@gmail.com>
+Depends: python3, python3-gi, gir1.2-gtk-3.0, gir1.2-ayatanaappindicator3-0.1, librsvg2-common, systemd, upower
+Recommends: gnome-shell-extension-appindicator
+Filename: pool/lidawake_0.2.2_all.deb
+Size: 12684
+MD5sum: 170c20564b72f7d86fa16e9d90fe6311
+SHA1: fc30e23bf651a710dd2a5124b1c1b95274df89bd
+SHA256: 8c77c29fc6cc961aa3f664bb5eecb1c8603698950c95db3e25a319381c1ed2dc
+SHA512: 68701308babe01fc27e1f6bc0fac58a44ecdfd056a3a8ea5822559679b9eea88aa46028ddf5e63fc057e33cc7b0e5f0a81ffdd6a083ce2af169b13caab6302b2
+Homepage: https://github.com/vishnuskandha/lidawake
+Description: Keep a laptop awake with the lid closed
+ One-click GNOME top bar button and tray app that holds a logind inhibitor so
+ closing the lid does not suspend the machine. Timed sessions, until-lid-reopens
+ sessions and low-battery auto-off. Linux port of Lidawake.
+
