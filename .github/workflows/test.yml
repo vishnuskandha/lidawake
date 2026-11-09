@@ -1,0 +1,17 @@
+name: test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python3-gi gir1.2-gtk-3.0 gir1.2-ayatanaappindicator3-0.1 librsvg2-common xvfb dbus
+      - name: Unit tests
+        run: /usr/bin/python3 -m unittest discover -s tests
+      - name: Integration tests (mock logind/UPower)
+        run: PYTHON=/usr/bin/python3 ./tests/run_integration.sh
+      - name: Extension syntax
+        run: node --input-type=module --check < gnome-extension/awayke@daemonphantom.github.io/extension.js
