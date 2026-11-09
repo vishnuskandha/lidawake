@@ -12,7 +12,14 @@ mock = subprocess.Popen([sys.executable, os.path.join(os.path.dirname(__file__),
                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
 assert mock.stdout.readline().strip() == "ready"
 
-from lidawake.app import Lidawake, now  # noqa: E402
+import tempfile  # noqa: E402
+fake = tempfile.mkdtemp()
+calls = os.path.join(fake, "calls")
+with open(os.path.join(fake, "gnome-extensions"), "w") as f:
+    f.write(f'#!/bin/sh\necho "$@" >> {calls}\n')
+os.chmod(os.path.join(fake, "gnome-extensions"), 0o755)
+os.environ["PATH"] = fake + os.pathsep + os.environ["PATH"]
+from lidawake.app import EXT_MARKER, Lidawake, now  # noqa: E402
 
 app = Lidawake()
 app.register(None)
@@ -46,6 +53,11 @@ def check(cond, name):
     fails += not cond
 
 
+pump(1.0)
+check(os.path.exists(EXT_MARKER) and open(calls).read().strip() == "enable lidawake@vishnuskandha.github.io",
+      "first run enables the extension once and records it")
+app.ensure_extension_enabled(); pump(0.5)
+check(len(open(calls).read().strip().splitlines()) == 1, "does not re-enable after the marker exists")
 check(app.lid.is_closed is False, "lid state read from UPower")
 check(app.last_snapshot == (80, True), "battery snapshot read from UPower")
 check(inhibitors() == 0, "no inhibitor at start")

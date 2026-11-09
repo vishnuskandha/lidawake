@@ -1,3 +1,7 @@
+## v0.2.2
+
+- The app enables its GNOME extension on first run, so a fresh `.deb` install shows the header icon after one login (a manual disable is respected)
+
 ## v0.2.1
 
 - Signed APT repository: `sudo apt update && sudo apt upgrade` now delivers new versions

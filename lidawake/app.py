@@ -1,6 +1,7 @@
 """Lidawake for Linux: tray app. Port of AppDelegate.swift."""
 import json
 import os
+import shutil
 import signal
 import subprocess
 import sys
@@ -20,6 +21,8 @@ from .system import (BatteryMonitor, DisplayWakeKeeper, LidMonitor,  # noqa: E40
 APP_ID = "io.github.vishnuskandha.Lidawake"
 DATA_DIR = os.environ.get("LIDAWAKE_HOME", os.path.expanduser("~/.local/share/lidawake"))
 CONFIG = os.path.join(os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config")), "lidawake", "config.json")
+EXT_UUID = "lidawake@vishnuskandha.github.io"
+EXT_MARKER = os.path.join(os.path.dirname(CONFIG), "extension-enabled")
 THRESHOLDS = [0, 10, 20, 30]
 DURATIONS = [15, 30, 60, 120]
 
@@ -132,6 +135,7 @@ class Lidawake(Gtk.Application):
         GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGINT, self._on_signal)
         GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGTERM, self._on_signal)
         self.refresh()
+        self.ensure_extension_enabled()
 
     def _on_keep_for(self, action, param):
         minutes = param.get_int32()
@@ -139,6 +143,26 @@ class Lidawake(Gtk.Application):
             self.menu_until_lid()
         else:
             self.menu_keep_for(minutes)
+
+    def ensure_extension_enabled(self):
+        """First run only: switch on the packaged GNOME extension. The marker is written
+        after a successful enable, so a later manual disable by the user is respected."""
+        if os.path.exists(EXT_MARKER) or not shutil.which("gnome-extensions"):
+            return
+        try:
+            proc = Gio.Subprocess.new(["gnome-extensions", "enable", EXT_UUID],
+                                      Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE)
+            proc.wait_check_async(None, self._on_extension_enabled)
+        except GLib.Error:
+            pass
+
+    def _on_extension_enabled(self, proc, result):
+        try:
+            proc.wait_check_finish(result)
+            os.makedirs(os.path.dirname(EXT_MARKER), exist_ok=True)
+            open(EXT_MARKER, "w").close()
+        except (GLib.Error, OSError):
+            pass  # extension not discovered yet (needs a fresh login); retry next start
 
     def do_activate(self):
         pass
