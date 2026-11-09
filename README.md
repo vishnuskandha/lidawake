@@ -24,7 +24,13 @@ Close the lid and Ubuntu suspends. lidawake puts an eye in the top bar: **closed
 
 ## Install (Ubuntu 24.04+)
 
-**APT (recommended, auto-updates with `sudo apt update && sudo apt upgrade`):**
+**One line (adds the signed APT repo, auto-updates with `sudo apt update && sudo apt upgrade`):**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/vishnuskandha/lidawake/main/get.sh | sh
+```
+
+**APT, manual steps:**
 
 ```bash
 curl -fsSL https://vishnuskandha.github.io/lidawake/lidawake.gpg | sudo tee /usr/share/keyrings/lidawake.gpg >/dev/null
