@@ -9,7 +9,39 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - run: scripts/build-deb.sh "${GITHUB_REF_NAME#v}" && scripts/build-extension-zip.sh
+      - name: Tools
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends apt-utils gnupg zip
+      - name: Import signing key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          KEY=$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr/{print $10; exit}')
+          echo "KEY=$KEY" >> "$GITHUB_ENV"
+          printf '%s' "$GPG_PASSPHRASE" > "$RUNNER_TEMP/pass"
+          gpg --batch --export "$KEY" > "$RUNNER_TEMP/lidawake.gpg"
+      - name: Build packages
+        run: |
+          LIDAWAKE_GPG_PUB="$RUNNER_TEMP/lidawake.gpg" scripts/build-deb.sh "${GITHUB_REF_NAME#v}"
+          scripts/build-extension-zip.sh
+      - name: Fetch existing apt repo
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+        continue-on-error: true
+      - name: Build signed apt repo
+        run: |
+          mkdir -p site/pool && rm -rf site/.git
+          cp dist/*.deb site/pool/
+          scripts/make-apt-repo.sh site "$KEY" "$RUNNER_TEMP/pass"
+          cp docs/apt-index.html site/index.html
+      - name: Publish apt repo to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site
       - uses: softprops/action-gh-release@v2
         with:
           files: |

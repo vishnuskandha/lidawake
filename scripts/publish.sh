@@ -7,7 +7,6 @@ gh repo create vishnuskandha/lidawake --public --source . --push \
 for t in gnome-shell-extension ubuntu linux laptop power-management systemd gnome keep-awake lid; do
   gh repo edit --add-topic "$t"
 done
-scripts/build-deb.sh >/dev/null; scripts/build-extension-zip.sh >/dev/null
+# Tag push triggers CI, which builds the signed apt repo and the release (see docs/APT_SETUP.md).
 git tag -a "v$(cat VERSION)" -m "v$(cat VERSION)" && git push --tags
-gh release create "v$(cat VERSION)" dist/*.deb dist/lidawake-extension.zip \
-  --title "lidawake v$(cat VERSION)" --notes-file CHANGELOG.md
+echo "Now follow docs/APT_SETUP.md steps 1-2 (signing key secret) and 4 (enable Pages)."

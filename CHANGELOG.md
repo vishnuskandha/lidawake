@@ -1,3 +1,8 @@
+## v0.2.1
+
+- Signed APT repository: `sudo apt update && sudo apt upgrade` now delivers new versions
+- The package ships its own apt source and key
+
 ## v0.2.0
 
 - Renamed the app, command, extension and data dirs to **lidawake** (existing settings are migrated)

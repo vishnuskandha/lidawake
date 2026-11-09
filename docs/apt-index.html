@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8"><title>lidawake apt repository</title>
+<body style="font-family:sans-serif;max-width:46rem;margin:3rem auto;line-height:1.5">
+<h1>lidawake apt repository</h1>
+<p>Keep a Linux laptop awake with the lid closed. <a href="https://github.com/vishnuskandha/lidawake">Source</a></p>
+<pre>curl -fsSL https://vishnuskandha.github.io/lidawake/lidawake.gpg | sudo tee /usr/share/keyrings/lidawake.gpg &gt;/dev/null
+echo "deb [signed-by=/usr/share/keyrings/lidawake.gpg] https://vishnuskandha.github.io/lidawake stable main" | sudo tee /etc/apt/sources.list.d/lidawake.list
+sudo apt update &amp;&amp; sudo apt install lidawake</pre>

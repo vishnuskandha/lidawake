@@ -21,7 +21,15 @@ Close the lid and Ubuntu suspends. lidawake puts an eye in the top bar: **closed
 
 ## Install (Ubuntu 24.04+)
 
-**.deb (recommended):** download `lidawake_*_all.deb` from [Releases](https://github.com/vishnuskandha/lidawake/releases/latest), then:
+**APT (recommended, auto-updates with `sudo apt update && sudo apt upgrade`):**
+
+```bash
+curl -fsSL https://vishnuskandha.github.io/lidawake/lidawake.gpg | sudo tee /usr/share/keyrings/lidawake.gpg >/dev/null
+echo "deb [signed-by=/usr/share/keyrings/lidawake.gpg] https://vishnuskandha.github.io/lidawake stable main" | sudo tee /etc/apt/sources.list.d/lidawake.list
+sudo apt update && sudo apt install lidawake
+```
+
+**.deb only (no auto-update):** download `lidawake_*_all.deb` from [Releases](https://github.com/vishnuskandha/lidawake/releases/latest), then:
 
 ```bash
 sudo apt install ./lidawake_*_all.deb

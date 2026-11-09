@@ -58,6 +58,14 @@ pkill -f "python3 -m lidawake" 2>/dev/null || true
 exit 0
 PRE
 chmod 755 "$ROOT/DEBIAN/postinst" "$ROOT/DEBIAN/prerm"
+# Optional: ship the apt source + key so `apt upgrade` delivers future versions.
+if [ -n "${LIDAWAKE_GPG_PUB:-}" ]; then
+  install -d "$ROOT/usr/share/keyrings" "$ROOT/etc/apt/sources.list.d"
+  cp "$LIDAWAKE_GPG_PUB" "$ROOT/usr/share/keyrings/lidawake.gpg"
+  echo "deb [signed-by=/usr/share/keyrings/lidawake.gpg] https://vishnuskandha.github.io/lidawake stable main" \
+    > "$ROOT/etc/apt/sources.list.d/lidawake.list"
+  echo /etc/apt/sources.list.d/lidawake.list > "$ROOT/DEBIAN/conffiles"
+fi
 mkdir -p dist
 dpkg-deb --root-owner-group --build "$ROOT" "dist/lidawake_${VER}_all.deb" >/dev/null
 rm -rf "$ROOT"
